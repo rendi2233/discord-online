@@ -1,0 +1,21 @@
+{
+  "name": "discord-online",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Lightweight Discord clone for up to 5 friends (WebRTC mesh + Express + Socket.IO + React)",
+  "scripts": {
+    "dev": "concurrently -n server,client -c cyan,magenta \"npm --prefix server run dev\" \"npm --prefix client run dev\"",
+    "build": "npm --prefix client run build && npm --prefix server run build",
+    "start": "npm --prefix server run start",
+    "test": "npm --prefix server run test",
+    "lint": "eslint client/src server/src",
+    "format": "prettier --write \"client/src/**/*.{ts,tsx,css}\" \"server/src/**/*.ts\""
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.22.0",
+    "concurrently": "^9.1.2",
+    "eslint": "^9.22.0",
+    "prettier": "^3.5.3",
+    "typescript-eslint": "^8.26.1"
+  }
+}

@@ -90,7 +90,7 @@ npm run start
    git push -u origin main
    ```
 2. На [render.com](https://render.com) нажмите **New → Blueprint** (или **New → Web Service**) и подключите ваш GitHub-репозиторий.
-3. Render автоматически подхватит `render.yaml` (команда сборки `npm install && npm --prefix server install && npm --prefix client install && npm run build`, запуск `npm run start`).
+3. Render автоматически подхватит `render.yaml` (команда сборки `npm install --include=dev && npm --prefix server install --include=dev && npm --prefix client install --include=dev && npm run build`, запуск `npm run start`).
 4. В разделе **Environment** задайте при необходимости:
    - `ROOM_PASSWORD` — общий пароль для входа в комнаты (если не нужен, оставьте пустым).
    - `TURN_URL`, `TURN_USERNAME`, `TURN_CREDENTIAL` — ключи TURN.

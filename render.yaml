@@ -3,7 +3,7 @@ services:
     name: discord-online
     runtime: node
     plan: free
-    buildCommand: npm install && npm --prefix server install && npm --prefix client install && npm run build
+    buildCommand: npm install --include=dev && npm --prefix server install --include=dev && npm --prefix client install --include=dev && npm run build
     startCommand: npm run start
     healthCheckPath: /api/health
     envVars:

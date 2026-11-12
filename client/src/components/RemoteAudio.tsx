@@ -52,7 +52,7 @@ export const RemoteAudio: React.FC<RemoteAudioProps> = ({
   outputDeviceId,
 }) => {
   return (
-    <div style={{ display: 'none' }} aria-hidden="true">
+    <div style={{ position: 'fixed', bottom: -100, opacity: 0, pointerEvents: 'none' }} aria-hidden="true">
       {Array.from(streams.entries()).map(([peerId, stream]) => (
         <PeerAudioElement
           key={peerId}

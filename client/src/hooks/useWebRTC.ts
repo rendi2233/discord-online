@@ -239,6 +239,9 @@ export function useWebRTC(
       };
       peersRef.current.set(peerId, peerState);
 
+      const pendingCandidates: RTCIceCandidateInit[] = [];
+      (peerState as unknown as { pendingCandidates: RTCIceCandidateInit[] }).pendingCandidates = pendingCandidates;
+
       // Add local mic track
       if (localAudioStreamRef.current) {
         for (const track of localAudioStreamRef.current.getAudioTracks()) {
@@ -287,8 +290,11 @@ export function useWebRTC(
       };
 
       pc.ontrack = ({ track, streams }) => {
-        const stream = streams[0] ?? new MediaStream([track]);
-        const hasVideo = stream.getVideoTracks().length > 0 || track.kind === 'video';
+        let stream = streams[0];
+        if (!stream) {
+          stream = new MediaStream([track]);
+        }
+        const hasVideo = track.kind === 'video';
 
         if (hasVideo) {
           setRemoteScreenStream(stream);
@@ -392,6 +398,14 @@ export function useWebRTC(
 
             await pc.setRemoteDescription(tunedDesc);
 
+            const pending = (peer as unknown as { pendingCandidates?: RTCIceCandidateInit[] }).pendingCandidates;
+            if (pending && pending.length > 0) {
+              for (const cand of pending) {
+                await pc.addIceCandidate(cand).catch(() => {});
+              }
+              pending.length = 0;
+            }
+
             if (description.type === 'offer') {
               const answer = await pc.createAnswer();
               if (answer.sdp) {
@@ -405,7 +419,12 @@ export function useWebRTC(
             }
           } else if (candidate) {
             try {
-              await pc.addIceCandidate(candidate);
+              if (pc.remoteDescription && pc.remoteDescription.type) {
+                await pc.addIceCandidate(candidate);
+              } else {
+                const pending = (peer as unknown as { pendingCandidates?: RTCIceCandidateInit[] }).pendingCandidates;
+                pending?.push(candidate);
+              }
             } catch (err) {
               if (!peer.ignoreOffer) throw err;
             }
